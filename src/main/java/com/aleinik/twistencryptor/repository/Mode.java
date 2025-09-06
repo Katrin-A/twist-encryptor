@@ -8,11 +8,11 @@ public enum Mode {
     BRUTE_FORCE(3, new BruteForce()),
     STATISTICAL_ANALYSIS(4, new StatisticalAnalysis());
 
-    private Function function;
+    private final Function function;
 
     private final int code;
 
-    private Mode(int code, Function function) {
+    Mode(int code, Function function) {
         this.code = code;
         this.function = function;
     }
