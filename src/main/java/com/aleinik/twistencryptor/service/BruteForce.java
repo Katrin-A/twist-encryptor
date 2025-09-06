@@ -1,11 +1,10 @@
 package com.aleinik.twistencryptor.service;
 
 import com.aleinik.twistencryptor.alphabet.Alphabet;
-import com.aleinik.twistencryptor.alphabet.AlphabetFactory;
 import com.aleinik.twistencryptor.entity.KeyCandidate;
 import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
-import com.aleinik.twistencryptor.repository.ResultCode;
+import com.aleinik.twistencryptor.repository.Language;
 import com.aleinik.twistencryptor.view.View;
 
 import java.io.BufferedReader;
@@ -29,7 +28,7 @@ public class BruteForce implements Function {
 
         List<KeyCandidate> topCandidates = candidates.subList(0, Math.min(5, candidates.size()));
         int answer = confirmKey(view, candidates.get(0).getPreviewString(), candidates.get(0).getKey());
-        if (answer == 2) {
+        if (answer == 2) {//magic number
             bestMatchIndex = chooseDecryptionKey(view, topCandidates);
         }
 
@@ -42,7 +41,7 @@ public class BruteForce implements Function {
         List<KeyCandidate> candidates = new ArrayList<>();
 
         List<String> sampleLines = readSampleLines(params.getPath(), 20);
-        Alphabet alphabet = AlphabetFactory.get(params.getLanguage());
+        Alphabet alphabet = params.getLanguage().getAlphabet();
         Collection<Integer> keySet = alphabet.getCharToIndexMap().values();
 
         for (Integer key : keySet) {
@@ -103,12 +102,13 @@ public class BruteForce implements Function {
             }
 
         } catch (IOException e) {
+            //TODO: Remove this and wrap the IOException into Runtime exception
             System.out.println("Something went wrong...");
         }
         return sampleLines;
     }
 
-    private List<String> decodeSample(int language, int key, List<String> sampleLines) {
+    private List<String> decodeSample(Language language, int key, List<String> sampleLines) {
         List<String> decodedSample = new ArrayList<>(sampleLines.size());
         for (String line : sampleLines) {
             decodedSample.add(decoder.decode(language, key, line));

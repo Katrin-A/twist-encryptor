@@ -6,14 +6,23 @@ import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
 
 import java.util.List;
-import java.util.Scanner;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-public interface View {
-    UserParameters getParameters();
+public abstract class View {
+    protected final ResourceBundle bundle;
+    public View() {
+        this.bundle = ResourceBundle.getBundle("properties.messages");
+    }
 
-    void printResult(Result result);
+    public View(Locale locale) {
+        this.bundle = ResourceBundle.getBundle("properties.messages", locale);
+    }
+    public abstract UserParameters getParameters();
 
-    int confirmDecryptionPreview(String decodedExample, int key);
+    public abstract void printResult(Result result);
 
-    int chooseDecryptionKey(List<KeyCandidate> candidates);
+    public abstract int confirmDecryptionPreview(String decodedExample, int key);
+
+    public abstract int chooseDecryptionKey(List<KeyCandidate> candidates);
 }

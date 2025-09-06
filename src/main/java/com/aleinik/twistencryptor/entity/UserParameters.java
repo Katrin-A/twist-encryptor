@@ -1,25 +1,28 @@
 package com.aleinik.twistencryptor.entity;
 
+import com.aleinik.twistencryptor.repository.Language;
+import com.aleinik.twistencryptor.repository.Mode;
+
 import java.nio.file.Path;
 
 public class UserParameters {
-    private final int language;
-    private final int mode;
+    private final Language language;
+    private final Mode mode;
     private final Path path;
     private int key;
 
-    public UserParameters(int language, int mode, int key, Path path) {
+    public UserParameters(Language language, Mode mode, int key, Path path) {
         this.language = language;
         this.mode = mode;
         this.key = key;
         this.path = path;
     }
 
-    public int getLanguage() {
+    public Language getLanguage() {
         return language;
     }
 
-    public int getMode() {
+    public Mode getMode() {
         return mode;
     }
 

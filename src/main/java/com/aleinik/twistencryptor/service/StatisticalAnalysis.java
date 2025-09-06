@@ -15,14 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class Decode implements Function {
+public class StatisticalAnalysis implements Function {
     @Override
     public Result execute(UserParameters params, View view) {
-        //TODO: move the path thing into other place (this is the repited code
-
         Path outputPath = params.getPath().getParent().resolve("decodeResult.txt");
-
-
         try (BufferedReader reader = Files.newBufferedReader(params.getPath());
              BufferedWriter writer = Files.newBufferedWriter(outputPath)) {
 
@@ -32,8 +28,6 @@ public class Decode implements Function {
             }
 
         } catch (IOException e) {
-            //TODO: wrap the IO exception into Runtime exception adn remove
-            // System.out print ln because it wont work in any other view
             System.out.println("Something went wrong...");
             return new Result(ResultCode.ERROR, new ApplicationException());
         }
@@ -41,15 +35,13 @@ public class Decode implements Function {
         return new Result(ResultCode.OK);
     }
 
-
     protected String decode(Language language, int key, String input) {
         char[] chars = input.toCharArray();
-        Alphabet alphabet =language.getAlphabet();
+        Alphabet alphabet = language.getAlphabet();
         Map<Character, Integer> charMap = alphabet.getCharToIndexMap();
         char[] symbols = alphabet.getSymbols();
 
         StringBuilder stringBuffer = new StringBuilder();
-        //TODO: move tis part in separate function and unite the decode and encode (repited code alert)
         for (Character ch : chars) {
             if (charMap.containsKey(ch)) {
                 int index = charMap.get(ch);
