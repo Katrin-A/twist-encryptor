@@ -4,7 +4,7 @@ import com.aleinik.twistencryptor.alphabet.Alphabet;
 import com.aleinik.twistencryptor.entity.KeyCandidate;
 import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
-import com.aleinik.twistencryptor.repository.Language;
+import com.aleinik.twistencryptor.enums.Confirmation;
 import com.aleinik.twistencryptor.view.View;
 
 import java.io.BufferedReader;
@@ -27,8 +27,8 @@ public class BruteForce implements Function {
         candidates.addAll(findKey(params));
 
         List<KeyCandidate> topCandidates = candidates.subList(0, Math.min(5, candidates.size()));
-        int answer = confirmKey(view, candidates.get(0).getPreviewString(), candidates.get(0).getKey());
-        if (answer == 2) {//magic number
+        Confirmation answer = view.confirmDecryptionPreview(candidates.get(0).getPreviewString(), candidates.get(0).getKey());
+        if (answer == Confirmation.DECLINE) {
             bestMatchIndex = chooseDecryptionKey(view, topCandidates);
         }
 
@@ -45,7 +45,7 @@ public class BruteForce implements Function {
         Collection<Integer> keySet = alphabet.getCharToIndexMap().values();
 
         for (Integer key : keySet) {
-            List<String> decodedLines = decodeSample(params.getLanguage(), key, sampleLines);
+            List<String> decodedLines = decodeSample(params, sampleLines);
             double fitness = evaluateFitnessByPatterns(decodedLines, alphabet);
             candidates.add(new KeyCandidate(key, decodedLines.get(0), fitness));
         }
@@ -86,11 +86,6 @@ public class BruteForce implements Function {
         return result;
     }
 
-    private int confirmKey(View view, String decodedExample, int key) {
-        int result = view.confirmDecryptionPreview(decodedExample, key);
-        return result;
-    }
-
     private List<String> readSampleLines(Path path, int maxLines) {
         List<String> sampleLines = new ArrayList<>();
         try (BufferedReader reader = Files.newBufferedReader(path)) {
@@ -108,10 +103,10 @@ public class BruteForce implements Function {
         return sampleLines;
     }
 
-    private List<String> decodeSample(Language language, int key, List<String> sampleLines) {
+    private List<String> decodeSample(UserParameters params, List<String> sampleLines) {
         List<String> decodedSample = new ArrayList<>(sampleLines.size());
         for (String line : sampleLines) {
-            decodedSample.add(decoder.decode(language, key, line));
+            decodedSample.add(decoder.decode(params, line));
         }
 
         return decodedSample;

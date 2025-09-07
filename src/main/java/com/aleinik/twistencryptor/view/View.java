@@ -4,6 +4,7 @@ package com.aleinik.twistencryptor.view;
 import com.aleinik.twistencryptor.entity.KeyCandidate;
 import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
+import com.aleinik.twistencryptor.enums.Confirmation;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,7 +23,7 @@ public abstract class View {
 
     public abstract void printResult(Result result);
 
-    public abstract int confirmDecryptionPreview(String decodedExample, int key);
+    public abstract Confirmation confirmDecryptionPreview(String decodedExample, int key);
 
     public abstract int chooseDecryptionKey(List<KeyCandidate> candidates);
 }

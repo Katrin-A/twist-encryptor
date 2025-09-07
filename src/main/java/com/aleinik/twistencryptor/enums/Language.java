@@ -1,10 +1,10 @@
-package com.aleinik.twistencryptor.repository;
+package com.aleinik.twistencryptor.enums;
 
 import com.aleinik.twistencryptor.alphabet.Alphabet;
 import com.aleinik.twistencryptor.alphabet.EnglishAlphabet;
 import com.aleinik.twistencryptor.alphabet.RussianAlphabet;
 
-public enum Language {
+public enum Language implements CodedEnum{
     RUSSIAN(1, new RussianAlphabet()),
     ENGLISH(2, new EnglishAlphabet());
 
@@ -21,19 +21,13 @@ public enum Language {
         return code;
     }
 
+    public String getDisplayName(){
+
+        return this.name();
+    }
+
     public Alphabet getAlphabet(){
 
         return alphabet;
-    }
-
-
-    public static Language fromCode(int code)  {
-        for (Language language : values()){
-            if(language.getCode()== code){
-                return language;
-            }
-        }
-
-        throw new IllegalArgumentException("Unknown code: " + code);
     }
 }

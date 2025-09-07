@@ -3,8 +3,9 @@ package com.aleinik.twistencryptor.service;
 import com.aleinik.twistencryptor.alphabet.Alphabet;
 import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
+import com.aleinik.twistencryptor.enums.Language;
 import com.aleinik.twistencryptor.exception.ApplicationException;
-import com.aleinik.twistencryptor.repository.ResultCode;
+import com.aleinik.twistencryptor.enums.ResultCode;
 import com.aleinik.twistencryptor.view.View;
 
 import java.io.BufferedReader;
@@ -12,9 +13,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Map;
 
-public class Encode implements Function {
+public class Encode extends CaesarCipher implements Function {
 
 
     @Override
@@ -32,8 +32,6 @@ public class Encode implements Function {
             }
 
         } catch (IOException e) {
-            //TODO: remove System out print LN
-            System.out.println("Something went wrong...");
             return new Result(ResultCode.ERROR, new ApplicationException());
         }
 
@@ -41,24 +39,9 @@ public class Encode implements Function {
     }
 
 
-    private String encode(UserParameters param, String input) {
-
-        char[] chars = input.toCharArray();
-        Alphabet alphabet = param.getLanguage().getAlphabet();
-        Map<Character, Integer> charMap = alphabet.getCharToIndexMap();
-        char[] symbols = alphabet.getSymbols();
-
-        StringBuilder stringBuffer = new StringBuilder();
-        for (Character ch : chars) {
-            if (charMap.containsKey(ch)) {
-                int index = charMap.get(ch);
-                int newIndex = (index + param.getKey()) % symbols.length;
-                char newSymbol = symbols[newIndex];
-                stringBuffer.append(newSymbol);
-            } else {
-                stringBuffer.append(ch);
-            }
-        }
-        return stringBuffer.toString();
+    private String encode(UserParameters params, String input) {
+        Language language = params.getLanguage();
+        int key = params.getKey();
+        return transform(input, language, key);
     }
 }

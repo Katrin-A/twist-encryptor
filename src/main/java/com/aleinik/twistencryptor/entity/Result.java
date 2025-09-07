@@ -1,7 +1,7 @@
 package com.aleinik.twistencryptor.entity;
 
 import com.aleinik.twistencryptor.exception.ApplicationException;
-import com.aleinik.twistencryptor.repository.ResultCode;
+import com.aleinik.twistencryptor.enums.ResultCode;
 
 public class Result {
     private ResultCode resultCode;

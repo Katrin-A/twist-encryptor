@@ -1,7 +1,7 @@
 package com.aleinik.twistencryptor.entity;
 
-import com.aleinik.twistencryptor.repository.Language;
-import com.aleinik.twistencryptor.repository.Mode;
+import com.aleinik.twistencryptor.enums.Language;
+import com.aleinik.twistencryptor.enums.Mode;
 
 import java.nio.file.Path;
 

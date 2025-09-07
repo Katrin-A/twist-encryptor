@@ -4,8 +4,8 @@ import com.aleinik.twistencryptor.alphabet.Alphabet;
 import com.aleinik.twistencryptor.entity.Result;
 import com.aleinik.twistencryptor.entity.UserParameters;
 import com.aleinik.twistencryptor.exception.ApplicationException;
-import com.aleinik.twistencryptor.repository.Language;
-import com.aleinik.twistencryptor.repository.ResultCode;
+import com.aleinik.twistencryptor.enums.Language;
+import com.aleinik.twistencryptor.enums.ResultCode;
 import com.aleinik.twistencryptor.view.View;
 
 import java.io.BufferedReader;
@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class Decode implements Function {
+public class Decode extends CaesarCipher implements Function {
     @Override
     public Result execute(UserParameters params, View view) {
         //TODO: move the path thing into other place (this is the repited code
@@ -27,14 +27,11 @@ public class Decode implements Function {
              BufferedWriter writer = Files.newBufferedWriter(outputPath)) {
 
             while (reader.ready()) {
-                writer.write(decode(params.getLanguage(), params.getKey(), reader.readLine()));
+                writer.write(decode(params, reader.readLine()));
                 writer.newLine();
             }
 
         } catch (IOException e) {
-            //TODO: wrap the IO exception into Runtime exception adn remove
-            // System.out print ln because it wont work in any other view
-            System.out.println("Something went wrong...");
             return new Result(ResultCode.ERROR, new ApplicationException());
         }
 
@@ -42,24 +39,9 @@ public class Decode implements Function {
     }
 
 
-    protected String decode(Language language, int key, String input) {
-        char[] chars = input.toCharArray();
-        Alphabet alphabet =language.getAlphabet();
-        Map<Character, Integer> charMap = alphabet.getCharToIndexMap();
-        char[] symbols = alphabet.getSymbols();
-
-        StringBuilder stringBuffer = new StringBuilder();
-        //TODO: move tis part in separate function and unite the decode and encode (repited code alert)
-        for (Character ch : chars) {
-            if (charMap.containsKey(ch)) {
-                int index = charMap.get(ch);
-                int newIndex = (index - key + symbols.length) % symbols.length;
-                char newSymbol = symbols[newIndex];
-                stringBuffer.append(newSymbol);
-            } else {
-                stringBuffer.append(ch);
-            }
-        }
-        return stringBuffer.toString();
+    protected String decode(UserParameters params, String input) {
+        Language language = params.getLanguage();
+        int key = - params.getKey();
+        return transform(input, language, key);
     }
 }
